@@ -9,6 +9,7 @@ import RoomChat from '../pages/RoomChat';
 import React, {useState} from 'react';
 import {View, TouchableOpacity, TextInput} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import LoginScreen from '../pages/auth/LoginScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -76,6 +77,11 @@ function ChatStack() {
   };
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{headerShown: false}}
+      />
       <Stack.Screen name="Chats" component={TabNav} />
       <Stack.Screen
         name="Room Chat"
