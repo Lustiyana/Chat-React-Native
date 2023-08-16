@@ -5,10 +5,12 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {styles} from './style';
 
 type LoginScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Login'>;
@@ -16,47 +18,40 @@ type LoginScreenProps = {
 const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>LOGIN</Text>
-      <Text>Email</Text>
-      <TextInput style={styles.formInput} />
-      <Text>Password</Text>
-      <TextInput style={styles.formInput} secureTextEntry={true} />
-      <TouchableOpacity style={styles.buttonSubmit}>
-        <Text style={styles.buttonText}>LOGIN</Text>
-      </TouchableOpacity>
+      <ImageBackground
+        source={require('../../assets/images/bg.jpg')}
+        style={styles.imageBackground}>
+        <View style={styles.headingContainer}>
+          <Text style={styles.title}>Welcome Back!</Text>
+          <Text style={styles.subTitle}>Please login for access App</Text>
+        </View>
+        <View style={styles.formContainer}>
+          <View style={styles.formContent}>
+            <Text style={styles.formTitle}>LOGIN</Text>
+            <View style={styles.formInput}>
+              <Icon name="mail-outline" size={24} />
+              <TextInput placeholder="Email" />
+            </View>
+            <View style={styles.formInput}>
+              <Icon name="lock-closed-outline" size={24} />
+              <TextInput placeholder="Password" secureTextEntry={true} />
+            </View>
+            <TouchableOpacity
+              style={styles.buttonSubmit}
+              onPress={() => navigation.navigate('Chats')}>
+              <Text style={styles.buttonText}>LOGIN</Text>
+            </TouchableOpacity>
+            <View style={styles.formText}>
+              <Text>Don't have an account?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.formLink}>Register</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ImageBackground>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    height: '100%',
-    justifyContent: 'center',
-    padding: 16,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 32,
-  },
-  formInput: {
-    borderWidth: 1,
-    borderRadius: 12,
-    marginBottom: 12,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  buttonSubmit: {
-    backgroundColor: '#1C1C2D',
-    padding: 16,
-    borderRadius: 8,
-  },
-});
 
 export default LoginScreen;

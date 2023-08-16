@@ -10,6 +10,7 @@ import React, {useState} from 'react';
 import {View, TouchableOpacity, TextInput} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import LoginScreen from '../pages/auth/LoginScreen';
+import RegisterScreen from '../pages/auth/RegisterScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -82,9 +83,14 @@ function ChatStack() {
         component={LoginScreen}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{headerShown: false}}
+      />
       <Stack.Screen name="Chats" component={TabNav} />
       <Stack.Screen
-        name="Room Chat"
+        name="RoomChat"
         component={RoomChat}
         options={{
           title: openSearch ? '' : 'Gladys',

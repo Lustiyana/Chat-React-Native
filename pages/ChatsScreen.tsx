@@ -14,7 +14,7 @@ type ChatsScreenProps = {
 };
 const ChatsScreen: React.FC<ChatsScreenProps> = ({navigation}) => {
   return (
-    <TouchableWithoutFeedback onPress={() => navigation.navigate('Room Chat')}>
+    <TouchableWithoutFeedback onPress={() => navigation.navigate('RoomChat')}>
       <View style={styles.container}>
         <View style={styles.content}>
           <Image
