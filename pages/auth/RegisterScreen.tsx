@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {RootStackParamList} from '../../types/types';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {
@@ -13,11 +13,28 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {styles} from './style';
+import {auth} from '../../firebase/firebase';
+import {createUserWithEmailAndPassword} from 'firebase/auth';
 
-type LoginScreenProps = {
+type RegisterScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Register'>;
 };
-const RegisterScreen: React.FC<LoginScreenProps> = ({navigation}) => {
+const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
+  const [isRegister, setIsRegister] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleRegister = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(res => {
+        setIsRegister(true);
+        navigation.navigate('Login');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView style={styles.container}>
@@ -27,7 +44,12 @@ const RegisterScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           <View style={styles.formContainer}>
             <View style={styles.formContent}>
               <Text style={styles.formTitle}>REGISTER</Text>
-              <TextInput placeholder="Email" style={styles.formInput} />
+              <TextInput
+                placeholder="Email"
+                style={styles.formInput}
+                value={email}
+                onChangeText={e => setEmail(e)}
+              />
               <TextInput placeholder="Username" style={styles.formInput} />
               <View
                 style={{
@@ -48,6 +70,8 @@ const RegisterScreen: React.FC<LoginScreenProps> = ({navigation}) => {
                 placeholder="Password"
                 secureTextEntry={true}
                 style={styles.formInput}
+                value={password}
+                onChangeText={e => setPassword(e)}
               />
               <TextInput
                 placeholder="Confirm Password"
@@ -56,7 +80,7 @@ const RegisterScreen: React.FC<LoginScreenProps> = ({navigation}) => {
               />
               <TouchableOpacity
                 style={styles.buttonSubmit}
-                onPress={() => navigation.navigate('Login')}>
+                onPress={handleRegister}>
                 <Text style={styles.buttonText}>REGISTER</Text>
               </TouchableOpacity>
               <View style={styles.formText}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {RootStackParamList} from '../../types/types';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {
@@ -11,11 +11,28 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {styles} from './style';
+import {auth} from '../../firebase/firebase';
+import {signInWithEmailAndPassword} from 'firebase/auth';
 
 type LoginScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Login'>;
 };
 const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
+  const [isLogin, setIsLogin] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then(res => {
+        setIsLogin(true);
+        navigation.navigate('Chats');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -30,15 +47,22 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
             <Text style={styles.formTitle}>LOGIN</Text>
             <View style={styles.formInput}>
               <Icon name="mail-outline" size={24} />
-              <TextInput placeholder="Email" />
+              <TextInput
+                placeholder="Email"
+                value={email}
+                onChangeText={e => setEmail(e)}
+              />
             </View>
             <View style={styles.formInput}>
               <Icon name="lock-closed-outline" size={24} />
-              <TextInput placeholder="Password" secureTextEntry={true} />
+              <TextInput
+                placeholder="Password"
+                value={password}
+                secureTextEntry={true}
+                onChangeText={e => setPassword(e)}
+              />
             </View>
-            <TouchableOpacity
-              style={styles.buttonSubmit}
-              onPress={() => navigation.navigate('Chats')}>
+            <TouchableOpacity style={styles.buttonSubmit} onPress={handleLogin}>
               <Text style={styles.buttonText}>LOGIN</Text>
             </TouchableOpacity>
             <View style={styles.formText}>
