@@ -8,18 +8,26 @@ import {
   FlatList,
   SafeAreaView,
 } from 'react-native';
-import {useState, useRef} from 'react';
+import {useState, useContext} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ChatContext from '../context/Chat';
 
 interface Chat {
   name: string;
   message: string;
+  receiver: boolean;
 }
 
 const renderItem = ({item}: {item: Chat}) => {
   return (
     <View style={styles.chatContainer}>
-      <Text style={styles.chatSent}>{item.message}</Text>
+      <Text
+        style={[
+          styles.chatSent,
+          {alignSelf: item.receiver ? 'flex-start' : 'flex-end'},
+        ]}>
+        {item.message}
+      </Text>
     </View>
   );
 };
@@ -27,10 +35,37 @@ const renderItem = ({item}: {item: Chat}) => {
 const RoomChat = () => {
   const [message, setMessage] = useState('');
   const [chats, setChats] = useState<Chat[]>([]);
+  const Message = [
+    {
+      receiver: true,
+      name: 'Gladys',
+      message: 'Hallo',
+    },
+    {
+      receiver: true,
+      name: 'Gladys',
+      message: 'Hallo',
+    },
+    {
+      receiver: true,
+      name: 'Gladys',
+      message: 'Hallo',
+    },
+    {
+      receiver: true,
+      name: 'Gladys',
+      message: 'Hallo',
+    },
+    {
+      receiver: true,
+      name: 'Gladys',
+      message: 'Hallo',
+    },
+  ];
 
   function handleSend() {
     setChats(prev => {
-      return [...prev, {name: 'Arthur', message}];
+      return [...prev, ...Message, {name: 'Arthur', message, receiver: false}];
     });
     setMessage('');
   }
@@ -43,6 +78,7 @@ const RoomChat = () => {
         keyExtractor={(item, key) => key}
         contentContainerStyle={{paddingBottom: 72}}
       />
+
       <View style={styles.chatInput}>
         <Icon name="camera-outline" size={32} />
         <TextInput
@@ -95,7 +131,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 12,
     color: 'white',
-    alignSelf: 'flex-end',
     maxWidth: '75%',
   },
 });

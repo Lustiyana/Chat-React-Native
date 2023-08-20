@@ -9,6 +9,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Navigator from './components/Navigation';
+import ChatProvider from './provider';
 
 const Stack = createStackNavigator();
 
@@ -23,9 +24,11 @@ const App = () => {
     //     <Stack.Screen name="Friends" component={FriendsScreen} />
     //   </Stack.Navigator>
     // </NavigationContainer>
-    <NavigationContainer>
-      <Navigator />
-    </NavigationContainer>
+    <ChatProvider>
+      <NavigationContainer>
+        <Navigator />
+      </NavigationContainer>
+    </ChatProvider>
   );
 };
 

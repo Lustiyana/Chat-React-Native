@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {RootStackParamList} from '../../types/types';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {
@@ -10,29 +10,52 @@ import {
   ImageBackground,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {styles} from './style';
 import {auth} from '../../firebase/firebase';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
+import {ref, set, getDatabase} from 'firebase/database';
 
 type RegisterScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Register'>;
 };
 const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
   const [isRegister, setIsRegister] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
+  const [modifiedData, setModifiedData] = useState({
+    email: '',
+    username: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+    confirmPassword: '',
+  });
   const handleRegister = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(res => {
-        setIsRegister(true);
-        navigation.navigate('Login');
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    if (modifiedData.password === modifiedData.confirmPassword) {
+      createUserWithEmailAndPassword(
+        auth,
+        modifiedData.email,
+        modifiedData.password,
+      )
+        .then(res => {
+          setIsRegister(true);
+          const db = getDatabase();
+          set(ref(db, 'users/' + res.user.uid), {
+            email: modifiedData.email,
+            username: modifiedData.username,
+            firstName: modifiedData.firstName,
+            lastName: modifiedData.lastName,
+            password: modifiedData.password,
+            uid: res.user.uid,
+          });
+          navigation.navigate('Login');
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      Alert.alert('PASSWORD HARUS SAMA WOI');
+    }
   };
 
   return (
@@ -47,10 +70,17 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
               <TextInput
                 placeholder="Email"
                 style={styles.formInput}
-                value={email}
-                onChangeText={e => setEmail(e)}
+                onChangeText={e =>
+                  setModifiedData(prev => ({...prev, email: e}))
+                }
               />
-              <TextInput placeholder="Username" style={styles.formInput} />
+              <TextInput
+                placeholder="Username"
+                style={styles.formInput}
+                onChangeText={e =>
+                  setModifiedData(prev => ({...prev, username: e}))
+                }
+              />
               <View
                 style={{
                   flexDirection: 'row',
@@ -60,23 +90,33 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
                 <TextInput
                   placeholder="First Name"
                   style={[styles.formInput, styles.col]}
+                  onChangeText={e =>
+                    setModifiedData(prev => ({...prev, firstName: e}))
+                  }
                 />
                 <TextInput
                   placeholder="Last Name"
                   style={[styles.formInput, styles.col]}
+                  onChangeText={e =>
+                    setModifiedData(prev => ({...prev, lastName: e}))
+                  }
                 />
               </View>
               <TextInput
                 placeholder="Password"
                 secureTextEntry={true}
                 style={styles.formInput}
-                value={password}
-                onChangeText={e => setPassword(e)}
+                onChangeText={e =>
+                  setModifiedData(prev => ({...prev, password: e}))
+                }
               />
               <TextInput
                 placeholder="Confirm Password"
                 secureTextEntry={true}
                 style={styles.formInput}
+                onChangeText={e =>
+                  setModifiedData(prev => ({...prev, confirmPassword: e}))
+                }
               />
               <TouchableOpacity
                 style={styles.buttonSubmit}
