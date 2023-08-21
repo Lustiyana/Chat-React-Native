@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {RootStackParamList} from '../../types/types';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {
@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {styles} from './style';
 import {auth} from '../../firebase/firebase';
 import {signInWithEmailAndPassword} from 'firebase/auth';
+import AuthContext from '../../context/Auth';
 
 type LoginScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Login'>;
@@ -21,12 +22,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const {authState, authDispatch} = useContext(AuthContext);
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(res => {
         setIsLogin(true);
         navigation.navigate('Chats');
+        authDispatch({type: 'FETCH_DATA_LOGIN', payload: res.user.uid});
       })
       .catch(err => {
         console.log(err);
